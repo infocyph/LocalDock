@@ -1,0 +1,11 @@
+version: '3'
+
+volumes:
+  db-data: null
+  www-data: null
+
+services:
+  php:
+    build: .
+    volumes:
+      - .:/var/www/html
