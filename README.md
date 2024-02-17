@@ -1,1 +1,7 @@
 # localhost
+
+```
+| application
+       |- public
+| localhost
+```

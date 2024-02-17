@@ -2,24 +2,24 @@
 
 case "$1" in
   start | reload)
-    docker compose -f docker-compose.yml -f mysql.yml up -d
+    docker compose up -d app mysql phpmyadmin
     ;;
   stop)
-    docker compose -f docker-compose.yml -f mysql.yml down
+    docker compose down
     ;;
   reboot | restart)
-    docker compose -f docker-compose.yml -f mysql.yml down
-    docker compose -f docker-compose.yml -f mysql.yml up -d
+    docker compose down
+    docker compose up -d app mysql phpmyadmin
     ;;
   rebuild)
-    docker compose -f docker-compose.yml -f mysql.yml down
-    docker compose -f docker-compose.yml -f mysql.yml build --no-cache
-    docker compose -f docker-compose.yml -f mysql.yml up -d --force-recreate
+    docker compose down
+    docker compose build app mysql phpmyadmin --no-cache
+    docker compose up -d app mysql phpmyadmin --force-recreate
     ;;
   cli)
     docker exec -it Core bash -c "sudo -u devuser /bin/bash"
     ;;
   *)
-    docker compose -f docker-compose.yml -f mysql.yml $@
+    docker compose $@
     ;;
 esac
