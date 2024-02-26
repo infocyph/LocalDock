@@ -1,7 +1,7 @@
 @echo off
 
 if "%1" == "start" (
-    docker compose up -d app mysql phpmyadmin
+    docker compose up -d
 ) else if "%1" == reload (
     docker compose up -d app mysql phpmyadmin
 ) else if %1 == stop (

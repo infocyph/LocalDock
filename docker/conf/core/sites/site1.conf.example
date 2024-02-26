@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+
+  # Server Name
+  ServerName site1.local
+
+  # Document Root (where website files are located)
+  DocumentRoot /var/www/html/site1
+
+  # Custom log files for access and errors
+  <Directory /var/www/html/site1>
+      Options Indexes FollowSymLinks
+      AllowOverride All
+      Require all granted
+  </Directory>
+
+  ErrorLog ${APACHE_LOG_DIR}/site1-error.log
+  CustomLog ${APACHE_LOG_DIR}/site1-access.log combined
+
+  # Security measures
+  # <IfModule mod_ssl.c>
+  #   SSLEngine on
+  #   SSLCertificateFile /path/to/your/server.crt
+  #   SSLCertificateKeyFile /path/to/your/server.key
+  #   # Set up additional SSL directives if needed
+  # </IfModule>
+
+</VirtualHost>

@@ -6,13 +6,11 @@ FROM php:${PHP_VERSION}-apache
 RUN apt update && apt upgrade -y && apt install locales curl git -y
 
 # Configureing Apache
-ARG SERVER_DOMAIN
 ENV APACHE_LOG_DIR=/var/log/apache2
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN echo "ServerName ${SERVER_DOMAIN}" >> /etc/apache2/apache2.conf
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 RUN a2enmod rewrite ssl socache_shmcb headers
+ADD ./sites/*.conf /etc/apache2/sites-available
+RUN rm -rf /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf && \
+    a2ensite *
 
 # Install PHP extensions
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/

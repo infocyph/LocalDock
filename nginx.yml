@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+    web:
+      container_name: WEB
+      image: nginx:${NGINX_VERSION:-latest}
+      restart: always
+      ports:
+        - "${HTTP_PORT:-80}:80"
+        - "${HTTPS_PORT:-443}:443"
+      volumes:
+        - ./../application:/app
+        - ./docker/conf/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      links:
+        - php
+      networks:
+        - abmmhasan-net
+
+    php:
+      container_name: PHP
+      build:
+        context: docker/conf/php
+        args:
+            PHP_VERSION: ${PHP_VERSION:-8.2}
+            UID: ${UID:-1000}
+      restart: always
+      env_file:
+        - "./.env"
+      volumes:
+        - ./../application:/app
+        - ./docker/conf/php/php.ini:/usr/local/etc/php/conf.d/99-overrides.ini
+        - ./docker/conf/php/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+        - ./docker/conf/php/openssl.cnf:/etc/ssl/openssl.cnf:rw
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+      networks:
+        - abmmhasan-net
+
+networks:
+  abmmhasan-net:
+    driver: bridge
