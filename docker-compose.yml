@@ -32,10 +32,10 @@ services:
       ports:
         - "${MYSQL_PORT:-3306}:3306"
       environment:
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-12345}
+        - MYSQL_USER=${MYSQL_USER:-devuser}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD:-12345}
+        - MYSQL_DATABASE=${MYSQL_DATABASE:-localdb}
         - TZ=${TZ:-Asia/Dhaka}
       volumes:
         - ./docker/data/mysql:/var/lib/mysql
@@ -44,18 +44,18 @@ services:
         - abmmhasan-net
 
     phpmyadmin:
-      container_name: MYADMIN
+      container_name: MY_ADMIN
       image: phpmyadmin:latest
       restart: always
       ports:
-        - "${MYADMIN_PORT:-3050}:80"
+        - "${MYADMIN_PORT:-3300}:80"
       environment:
         - PMA_ARBITRARY=1
         - PMA_HOST=mysql
         - PMA_PORT=${MYSQL_PORT:-3306}
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-12345}
+        - MYSQL_USER=${MYSQL_USER:-devuser}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD:-12345}
       volumes:
         - ./docker/conf/core/php.ini:/usr/local/etc/php/conf.d/99-overrides.ini
       depends_on:
@@ -66,32 +66,109 @@ services:
     postgres:
       container_name: POSTGRESQL
       image: postgres:${POSTGRESQL_VERSION:-latest}
-      restart: always
+      # restart: always
       ports:
         - "${POSTGRESQL_PORT:-5432}:5432"
       environment:
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - POSTGRES_DB=${POSTGRES_DATABASE}
+        - POSTGRES_USER=${POSTGRES_USER:-postgres}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+        - POSTGRES_DB=${POSTGRES_DATABASE:-postgres}
         - TZ=${TZ:-Asia/Dhaka}
       volumes:
-        - ./docker/data/postgresql:/var/lib/postgresql
+        - ./docker/data/postgresql:/var/lib/postgresql/data
       networks:
         - abmmhasan-net
 
     pgadmin:
-      container_name: PGADMIN
+      container_name: PG_ADMIN
       image: dpage/pgadmin4:latest
       restart: always
       ports:
-        - "${PGADMIN_PORT:-5050}:80"
+        - "${PGADMIN_PORT:-5400}:80"
       environment:
-        PGADMIN_DEFAULT_EMAIL: admin@email.com
-        PGADMIN_DEFAULT_PASSWORD: admin
+        - PGADMIN_DEFAULT_EMAIL=admin@email.com
+        - PGADMIN_DEFAULT_PASSWORD=admin
       volumes:
-        - ./data/pgadmin-data:/var/lib/pgadmin
+        - ./docker/data/pgadmin:/var/lib/pgadmin
       depends_on:
         - postgres
+      networks:
+        - abmmhasan-net
+
+    mongo:
+      container_name: MONGODB
+      image: mongo:${MONGODB_VERSION:-latest}
+      restart: always
+      ports:
+        - "${MONGODB_PORT:-27017}:27017"
+      environment:
+        - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ROOT_USERNAME:-root}
+        - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD:-example}
+      logging:
+          options:
+              max-size: 1g
+      networks:
+        - abmmhasan-net
+
+    mongo-express:
+      container_name: MONGO_ADMIN
+      image: mongo-express:${ME_VERSION:-latest}
+      restart: always
+      ports:
+        - "${ME_PORT:-8081}:8081"
+      environment:
+        - ME_CONFIG_BASICAUTH_USERNAME=${ME_BA_USERNAME:-root}
+        - ME_CONFIG_BASICAUTH_PASSWORD=${ME_BA_PASSWORD:-example}
+        - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGODB_ROOT_USERNAME:-root}
+        - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGODB_ROOT_PASSWORD:-example}
+        - ME_CONFIG_MONGODB_URL=mongodb://${MONGODB_ROOT_USERNAME:-root}:${MONGODB_ROOT_PASSWORD:-example}@mongo:${MONGODB_PORT:-27017}/
+      depends_on:
+        - mongo
+      networks:
+        - abmmhasan-net
+
+    elasticsearch:
+      container_name: ELASTICSEARCH
+      image: elasticsearch:${ELASTICSEARCH_VERSION:-8.12.2}
+      restart: always
+      ports:
+        - "${ELASTICSEARCH_PORT:-9200}:9200"
+      environment:
+        discovery.type: 'single-node'
+        xpack.security.enabled: 'false'
+      volumes:
+        - ./docker/data/elasticsearch:/usr/share/elasticsearch/data
+      networks:
+        - abmmhasan-net
+
+    kibana:
+      container_name: KIBANA
+      image: kibana:${ELASTICSEARCH_VERSION:-8.12.2}
+      restart: always
+      ports:
+        - "${KIBANA_PORT:-5601}:5601"
+      environment:
+        ELASTICSEARCH_HOSTS: '["http://elasticsearch:${ELASTICSEARCH_PORT:-9200}"]'
+      networks:
+        - abmmhasan-net
+        
+    redis: 
+      container_name: REDIS
+      image: redis/redis-stack-server:${REDIS_VERSION:-latest}
+      ports: 
+        - "${REDIS_PORT:-6379}:6379"
+      volumes: 
+        - ./docker/data/redis:/data
+      environment: 
+        - REDIS_ARGS = "--save 10 1 --appendonly yes"
+      networks:
+        - abmmhasan-net
+
+    redisinsight: 
+      container_name: REDIS_INSIGHT
+      image: redislabs/redisinsight:latest
+      ports: 
+        - "${RI_PORT:-5540}:5540"
       networks:
         - abmmhasan-net
 
