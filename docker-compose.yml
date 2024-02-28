@@ -165,14 +165,14 @@ services:
       networks:
         - abmmhasan-net
 
-    redisinsight: 
+    redis-insight:
       container_name: REDIS_INSIGHT
       image: redis/redisinsight:latest
       restart: always
       ports: 
         - "${RI_PORT:-5540}:5540"
       volumes: 
-        - ./docker/data/redisinsight:/data
+        - ./docker/data/redis-insight:/data
       networks:
         - abmmhasan-net
 
