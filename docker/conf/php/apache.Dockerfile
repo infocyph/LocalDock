@@ -3,7 +3,9 @@ ARG PHP_VERSION
 FROM php:${PHP_VERSION}-apache
 
 # Required installations/updates
-RUN apt update && apt upgrade -y && apt install curl git -y
+ARG LINUX_PACKAGES
+RUN apt update && apt upgrade -y
+RUN ["/bin/bash", "-c", "if [[ -n \"$LINUX_PACKAGES\" ]]; then apt install ${LINUX_PACKAGES//,/ } -y; fi"]
 
 # Prepare prerequisites
 ENV APACHE_LOG_DIR=/var/log/apache2
@@ -16,18 +18,14 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 RUN a2enmod rewrite ssl socache_shmcb headers && a2ensite *
 
 # Install PHP extensions
-RUN install-php-extensions @composer gettext pdo_mysql mysqli bcmath zip gd
+RUN ["/bin/bash", "-c", "install-php-extensions @composer ${PHP_EXTENSIONS//,/ }"]
 
-# Install mkcert (for local certificate generation, if required)
-RUN apt install libnss3-tools -y &&  \
-    curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64" && \
-    chmod +x mkcert-v*-linux-amd64 && \
-    cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+# Install Node
+ARG NODE_VERSION
+RUN ["/bin/bash", "-c", "if [[ -n \"$NODE_VERSION\" ]]; then curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - && apt install nodejs -y && npm i -g npm@latest; fi"]
 
-# Install Node LTS (latest)
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt install nodejs -y && npm i -g npm@latest
-
-RUN apt install sudo -y && \
+RUN apt update &&  \
+    apt install sudo -y && \
     apt clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/archives/*
 

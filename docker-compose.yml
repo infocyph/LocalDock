@@ -12,7 +12,10 @@ services:
         - "${HTTPS_PORT:-443}:443"
       volumes:
         - ./../application:/app
+        - ./docker/logs/nginx:/var/log/nginx
         - ./docker/conf/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
       links:
         - php
       networks:
@@ -22,9 +25,13 @@ services:
       container_name: PHP
       build:
         context: docker/conf/php
+        dockerfile: nginx.Dockerfile
         args:
           PHP_VERSION: ${PHP_VERSION:-8.2}
           UID: ${UID:-1000}
+          PHP_EXTENSIONS: ${PHP_EXTENSIONS:-}
+          LINUX_PACKAGES: ${LINUX_PACKAGES:-}
+          NODE_VERSION: ${NODE_VERSION:-}
       profiles:
         - nginx
       restart: always
@@ -43,10 +50,14 @@ services:
     app:
       container_name: Core
       build:
-        context: docker/conf/core
+        context: docker/conf/php
+        dockerfile: apache.Dockerfile
         args:
             PHP_VERSION: ${PHP_VERSION:-8.2}
             UID: ${UID:-1000}
+            PHP_EXTENSIONS: ${PHP_EXTENSIONS:-}
+            LINUX_PACKAGES: ${LINUX_PACKAGES:-}
+            NODE_VERSION: ${NODE_VERSION:-}
       profiles:
         - apache
       restart: always
@@ -66,7 +77,7 @@ services:
       networks:
         - abmmhasan-net
 
-    mysql:
+    mysql-server:
       container_name: MYSQL
       image: ${MYSQL_IMAGE:-mysql}:${MYSQL_VERSION:-latest}
       profiles:
@@ -87,7 +98,7 @@ services:
       networks:
         - abmmhasan-net
 
-    phpmyadmin:
+    mysql-client:
       container_name: MY_ADMIN
       image: phpmyadmin:latest
       profiles:
@@ -107,11 +118,11 @@ services:
         - ./docker/conf/core/php.ini:/usr/local/etc/php/conf.d/99-overrides.ini
         - ./docker/data/phpmyadmin:/etc/phpmyadmin/conf.d:ro
       depends_on:
-        - mysql
+        - mysql-server
       networks:
         - abmmhasan-net
 
-    postgres:
+    postgres-server:
       container_name: POSTGRESQL
       image: postgres:${POSTGRESQL_VERSION:-latest}
       profiles:
@@ -129,7 +140,7 @@ services:
       networks:
         - abmmhasan-net
 
-    pgadmin:
+    postgres-client:
       container_name: PG_ADMIN
       image: dpage/pgadmin4:latest
       profiles:
@@ -143,11 +154,11 @@ services:
       volumes:
         - ./docker/data/pgadmin:/var/lib/pgadmin
       depends_on:
-        - postgres
+        - postgres-server
       networks:
         - abmmhasan-net
 
-    mongo:
+    mongo-server:
       container_name: MONGODB
       image: mongo:${MONGODB_VERSION:-latest}
       profiles:
@@ -164,7 +175,7 @@ services:
       networks:
         - abmmhasan-net
 
-    mongo-express:
+    mongo-client:
       container_name: MONGO_ADMIN
       image: mongo-express:${ME_VERSION:-latest}
       profiles:
@@ -179,11 +190,11 @@ services:
         - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGODB_ROOT_PASSWORD:-example}
         - ME_CONFIG_MONGODB_URL=mongodb://${MONGODB_ROOT_USERNAME:-root}:${MONGODB_ROOT_PASSWORD:-example}@mongo:${MONGODB_PORT:-27017}/
       depends_on:
-        - mongo
+        - mongo-server
       networks:
         - abmmhasan-net
 
-    elasticsearch:
+    elasticsearch-server:
       container_name: ELASTICSEARCH
       image: elasticsearch:${ELASTICSEARCH_VERSION:-8.12.2}
       profiles:
@@ -199,7 +210,7 @@ services:
       networks:
         - abmmhasan-net
 
-    kibana:
+    elasticsearch-client:
       container_name: KIBANA
       image: kibana:${ELASTICSEARCH_VERSION:-8.12.2}
       profiles:
@@ -209,10 +220,12 @@ services:
         - "${KIBANA_PORT:-5601}:5601"
       environment:
         ELASTICSEARCH_HOSTS: '["http://elasticsearch:${ELASTICSEARCH_PORT:-9200}"]'
+      depends_on:
+        - elasticsearch-server
       networks:
         - abmmhasan-net
         
-    redis: 
+    redis-server:
       container_name: REDIS
       image: redis/redis-stack-server:${REDIS_VERSION:-latest}
       profiles:
@@ -227,7 +240,7 @@ services:
       networks:
         - abmmhasan-net
 
-    redis-insight:
+    redis-client:
       container_name: REDIS_INSIGHT
       image: redis/redisinsight:latest
       profiles:
@@ -237,6 +250,8 @@ services:
         - "${RI_PORT:-5540}:5540"
       volumes: 
         - ./docker/data/redis-insight:/data
+      depends_on:
+        - redis-server
       networks:
         - abmmhasan-net
 

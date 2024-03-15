@@ -1,3 +1,4 @@
+# http host example
 <VirtualHost *:80>
 
     # Site Identity
@@ -22,6 +23,20 @@
 
 </VirtualHost>
 
+# http to https redirect example (all host)
+<VirtualHost *:80>
+
+  # Server Alias (optional, list all domain variations if needed)
+  ServerAlias www.site1.local site1.local
+
+  # Redirect all requests to HTTPS version
+  RewriteEngine On
+  RewriteCond %{SERVER_PORT} !^443$
+  RewriteRule ^/(.*) https://%{SERVER_NAME}/$1 [R=301,L]
+
+</VirtualHost>
+
+# https host example
 <VirtualHost *:443>
 
     # Site Identity
