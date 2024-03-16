@@ -50,7 +50,7 @@ Now lets look into the localhost structure for where your configuration files sh
 Modules (Docker Images, Linux Packages, PHP Versions & Extensions, NodeJS) are controlled based on the environment variables.
 Checkout the .env.example file for example. To further understand these keep reading further.
 
-### Sync the system user
+### 1. Sync the system user
 Sync the internal docker user with the system user using the environment variable `UID`. In case of linux you can get this
 using `id -u` command which is the UID of current user. In case of windows, you can get with same command if you use [cmder
 terminal](https://github.com/cmderdev/cmder).
@@ -59,7 +59,7 @@ terminal](https://github.com/cmderdev/cmder).
 UID=1000
 ```
 
-### Selecting the docker image
+### 2. Selecting the docker image
 To select the docker image, we used the environment variable `COMPOSE_PROFILES`. You will include your required modules
 in CSV format (i.e. nginx,mysql). Here are the list of modules you can state here,
 - `nginx` loads nginx image with php
@@ -73,14 +73,14 @@ in CSV format (i.e. nginx,mysql). Here are the list of modules you can state her
 ```dotenv
 COMPOSE_PROFILES=nginx,postgresql
 ```
-### PHP version
+### 3. PHP version
 Select the PHP version using the environment variable `PHP_VERSION`. Supports single PHP version.
 
 ```dotenv
 PHP_VERSION=8.2
 ```
 
-### PHP extensions
+### 4. PHP extensions
 List your required PHP extensions using the environment variable `PHP_EXTENSIONS`. Supports CSV formatted list. For the list
 of available modules please refer to [mlocati docker extension list](https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions).
 Latest composer will be installed by default, no need to specify it.
@@ -89,7 +89,7 @@ Latest composer will be installed by default, no need to specify it.
 PHP_EXTENSIONS=bcmath,zip,gd
 ```
 
-### Linux packages
+### 5. Linux packages
 To install additional linux packages we used the environment variable `LINUX_PACKAGES`. 
 These extensions are additional not related to your php extensions as those will be auto installed by `PHP_EXTENSIONS`.
 Supports CSV formatted values.
@@ -98,15 +98,15 @@ Supports CSV formatted values.
 LINUX_PACKAGES=git,curl
 ```
 
-### node.js
-To install Node.Js we used the environment variable `NODE_VERSION`. Support major version number (i.e. 18/20/...). Also,
+### 6. node.js
+Your project is also using node.js? To install it, we used the environment variable `NODE_VERSION`. Support major version number (i.e. 18/20/...). Also,
 supports either of `lts` or `current` as well. Check [node.js debian source](https://github.com/nodesource/distributions#nodejs) for more details.
 Leaving this empty, won't install node.js.
 
 ```dotenv
 NODE_VERSION=lts
 ```
-## Image specific environment variables
+## Environment variables
 
 - `TZ` Timezone _(default: Asia/Dhaka)_
 
@@ -164,3 +164,7 @@ NODE_VERSION=lts
 
 ### redis client (Redis Insight)
 - `RI_PORT` The client access port _(default: 5540)_
+
+## ToDo
+- Tunnel support
+- More other images
