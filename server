@@ -13,8 +13,8 @@ case "$1" in
     ;;
   rebuild)
     docker compose down
-    docker compose build --no-cache
-    docker compose up -d --force-recreate
+    docker compose build --no-cache --force-rm --pull $@
+    docker compose up -d
     ;;
   cli)
     docker exec -it Core bash -c "sudo -u devuser /bin/bash"

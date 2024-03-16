@@ -10,8 +10,17 @@ can be enabled based on Environment file (.env)!
 - Simply, create `.env` file, place your settings.
 - Create site configuration file in `localhost/docker/sites/(nginx or apache)`. Example configuration available in those directory as well.
 - Don't forget to add in host file entry for your domain(s)
-- Run `server up` or `./server.sh up`
-- Your site(s) will be available in your desired domain
+- Run `server start` or `./server start` (on linux you must run `chmod +x server` first)
+- Your site(s) will be available in your desired domain(s)
+
+## How to use
+_Note: on linux you must run `chmod +x server` first_
+- `./server start/relaod` or `server start/reload` to start the server or reload with updated Environment variables
+- if you want to enter in PHP container shell, simply run `server cli` or `./server cli`
+- if you want to stop the server, simply run `server stop` or `./server stop`
+- if you want to restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
+- if you want to rebuild the server, simply run `server rebuild` or `./server rebuild`
+- In-fact you can use any `docker compose` command using `server`
 
 ## The directory structure
 
@@ -37,6 +46,10 @@ Now lets look into the localhost structure for where your configuration files sh
              |- ssl
              |- data
              |- logs
+       |- .env
+       |- docker-compose.yml
+       |- server
+       |- server.bat
 ```
 - The `data` directory holds the data of images for persistence
 - The `logs` directory holds the system logs for each of the images
