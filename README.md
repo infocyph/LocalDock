@@ -4,7 +4,7 @@ This project provides easy to use docker based development environment for your 
 can be enabled based on Environment file (.env)!
 
 >1. This is for local development only!
->2. Don't state both apache & nginx in COMPOSE_PROFILES 
+>2. Don't state both apache & nginx in COMPOSE_PROFILES.
 
 ## Run the server the easiest way
 - Simply, create `.env` file, place your settings.
@@ -19,7 +19,7 @@ _Note: on linux you must run `chmod +x server` first_
 - if you want to enter in PHP container shell, simply run `server cli` or `./server cli`
 - if you want to stop the server, simply run `server stop` or `./server stop`
 - if you want to restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
-- if you want to rebuild the server, simply run `server rebuild` or `./server rebuild`
+- if you want to rebuild the server, simply run `server rebuild <name of the continer>` or `./server rebuild <name of the continer>`
 - In-fact you can use any `docker compose` command using `server`
 
 ## The directory structure
