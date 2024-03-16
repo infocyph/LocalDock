@@ -33,7 +33,7 @@ server {
     index index.php index.html;
     server_name _;
 
-    root /app/public;
+    root /app/site2;
     client_max_body_size 12M;
 
     location / {
@@ -72,7 +72,7 @@ http {
         server_name _;
 
         # Serve a placeholder page for unmatched requests
-        root /var/www/html;
+        root /app/site2;
         location / {
             try_files $uri $uri/ /index.html;
         }

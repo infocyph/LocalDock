@@ -9,7 +9,7 @@ RUN ["/bin/bash", "-c", "if [[ -n \"$LINUX_PACKAGES\" ]]; then apt install ${LIN
 
 # Prepare prerequisites
 ENV APACHE_LOG_DIR=/var/log/apache2
-ADD ./sites/*.conf /etc/apache2/sites-available
+ADD ./apache/*.conf /etc/apache2/sites-available
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     rm -f /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/default-ssl.conf
