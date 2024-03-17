@@ -19,5 +19,5 @@ if "%1" == "start" (
 ) else if %1 == cli (
     docker exec -it Core bash -c "sudo -u devuser /bin/bash"
 ) else (
-    docker compose %*
+    docker exec -it Core %*
 )

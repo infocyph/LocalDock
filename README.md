@@ -6,21 +6,40 @@ can be enabled based on Environment file (.env)!
 >1. This is for local development only!
 >2. Don't state both apache & nginx in COMPOSE_PROFILES.
 
-## Run the server the easiest way
+## Run the server, the easiest way
 - Simply, create `.env` file, place your settings.
 - Create site configuration file in `localhost/docker/sites/(nginx or apache)`. Example configuration available in those directory as well.
 - Don't forget to add in host file entry for your domain(s)
 - Run `server start` or `./server start` (on linux you must run `chmod +x server` first)
 - Your site(s) will be available in your desired domain(s)
 
-## How to use
+## Usage
 _Note: on linux you must run `chmod +x server` first_
 - `./server start/relaod` or `server start/reload` to start the server or reload with updated Environment variables
-- if you want to enter in PHP container shell, simply run `server cli` or `./server cli`
-- if you want to stop the server, simply run `server stop` or `./server stop`
-- if you want to restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
-- if you want to rebuild the server, simply run `server rebuild <name of the continer>` or `./server rebuild <name of the continer>`
-- In-fact you can use any `docker compose` command using `server`
+- If you want to enter in PHP container shell, simply run `server cli` or `./server cli`
+- To stop the server, simply run `server stop` or `./server stop`
+- To restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
+- To rebuild the server, simply run `server rebuild <continer_name>` or `./server rebuild <continer_name>`
+- Run any php file directly using PHP container, simply run `server php path/to/file.php` or `./server php path/to/file.php`
+- In-fact you can run any command inside Core container using `server <command>` or `./server <command>` (except the above-mentioned ones)
+
+## CLI Utility
+You can add the `localhost/bin` directory, to your PATH environment variable for global usage of several commands.
+
+_** If you have any other docker container running with the same name as of this docker container names, it will end up in conflict!_
+
+**Available commands:**
+- `php`
+- `mysql`
+- `mysqldump`
+- `mariadb`
+- `mariadb-dump`
+- `psql`
+- `pg_dump`
+- `pg_restore`
+- `redis-cli`
+
+In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
 
 ## The directory structure
 
@@ -111,7 +130,7 @@ Supports CSV formatted values.
 LINUX_PACKAGES=git,curl
 ```
 
-### 6. node.js
+### 6. Node.js
 Your project is also using node.js? To install it, we used the environment variable `NODE_VERSION`. Support major version number (i.e. 18/20/...). Also,
 supports either of `lts` or `current` as well. Check [node.js debian source](https://github.com/nodesource/distributions#nodejs) for more details.
 Leaving this empty, won't install node.js.
@@ -119,7 +138,9 @@ Leaving this empty, won't install node.js.
 ```dotenv
 NODE_VERSION=lts
 ```
-## Environment variables
+### 7. Environment variables
+
+In addition to the above, you can define the following environment variables as you see fit.
 
 - `TZ` Timezone _(default: Asia/Dhaka)_
 
@@ -170,6 +191,9 @@ NODE_VERSION=lts
 ### elasticsearch
 - `ELASTICSEARCH_VERSION` ElasticSearch version _(default:8.12.2)_
 - `ELASTICSEARCH_PORT` ES port _(default: 9200)_
+
+### elasticsearch client (Kibana)
+- `KIBANA_PORT` The client access port _(default: 5601)_
 
 ### redis
 - `REDIS_VERSION` Redis version _(default: latest)_

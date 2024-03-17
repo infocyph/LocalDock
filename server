@@ -20,6 +20,6 @@ case "$1" in
     docker exec -it Core bash -c "sudo -u devuser /bin/bash"
     ;;
   *)
-    docker compose $@
+    docker exec -it Core $@
     ;;
 esac
