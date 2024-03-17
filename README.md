@@ -5,41 +5,7 @@ can be enabled based on Environment file (.env)!
 
 >1. This is for local development only!
 >2. Don't state both apache & nginx in COMPOSE_PROFILES.
-
-## Run the server, the easiest way
-- Simply, create `.env` file, place your settings.
-- Create site configuration file in `localhost/docker/sites/(nginx or apache)`. Example configuration available in those directory as well.
-- Don't forget to add in host file entry for your domain(s)
-- Run `server start` or `./server start` (on linux you must run `chmod +x server` first)
-- Your site(s) will be available in your desired domain(s)
-
-## Usage
-_Note: on linux you must run `chmod +x server` first_
-- `./server start/relaod` or `server start/reload` to start the server or reload with updated Environment variables
-- If you want to enter in PHP container shell, simply run `server cli` or `./server cli`
-- To stop the server, simply run `server stop` or `./server stop`
-- To restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
-- To rebuild the server, simply run `server rebuild <continer_name>` or `./server rebuild <continer_name>`
-- Run any php file directly using PHP container, simply run `server php path/to/file.php` or `./server php path/to/file.php`
-- In-fact you can run any command inside Core container using `server <command>` or `./server <command>` (except the above-mentioned ones)
-
-## CLI Utility
-You can add the `localhost/bin` directory, to your PATH environment variable for global usage of several commands.
-
-_** If you have any other docker container running with the same name as of this docker container names, it will end up in conflict!_
-
-**Available commands:**
-- `php`
-- `mysql`
-- `mysqldump`
-- `mariadb`
-- `mariadb-dump`
-- `psql`
-- `pg_dump`
-- `pg_restore`
-- `redis-cli`
-
-In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
+>3. Domain(s) should exist in the hosts file.
 
 ## The directory structure
 
@@ -77,6 +43,41 @@ Now lets look into the localhost structure for where your configuration files sh
 - The `sites/apache` directory for the apache site configuration/.conf files (example available in directory)
 - The `sites/nginx` directory for the nginx site configuration/.conf files (example available in directory)
 
+## Run the server, the easiest way
+- Simply, create `.env` file, place your settings.
+- Create site configuration file in `localhost/docker/sites/(nginx or apache)`. Example configuration available in those directory as well.
+- Don't forget to add in host file entry for your domain(s)
+- Run `server start` or `./server start` (on linux you must run `chmod +x server` first)
+- Your site(s) will be available in your desired domain(s)
+
+## Usage
+_Note: on linux you must run `chmod +x server` first_
+- `./server start/relaod` or `server start/reload` to start the server or reload with updated Environment variables
+- If you want to enter in PHP container shell, simply run `server cli` or `./server cli`
+- To stop the server, simply run `server stop` or `./server stop`
+- To restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
+- To rebuild the server, simply run `server rebuild <continer_name>` or `./server rebuild <continer_name>`
+- Run any php file directly using PHP container, simply run `server php path/to/file.php` or `./server php path/to/file.php`
+- In-fact you can run any command inside Core container using `server <command>` or `./server <command>` (except the above-mentioned ones)
+
+## CLI Utility
+You can add the `localhost/bin` directory, to your PATH environment variable for global usage of several commands.
+
+_** If you have any other docker container running with the same name as of this docker container names, it will end up in conflict!_
+
+**Available commands:**
+- `php`
+- `mysql`
+- `mysqldump`
+- `mariadb`
+- `mariadb-dump`
+- `psql`
+- `pg_dump`
+- `pg_restore`
+- `redis-cli`
+
+In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
+
 ## Modules & Other main settings
 
 Modules (Docker Images, Linux Packages, PHP Versions & Extensions, NodeJS) are controlled based on the environment variables.
@@ -101,6 +102,8 @@ in CSV format (i.e. nginx,mysql). Here are the list of modules you can state her
 - `mongodb` loads mongodb & mongo express
 - `elasticsearch` loads elasticsearch & kibana
 - `redis` loads redis & redis insight
+
+_Note: don't include both `nginx` & `apache`_
 
 ```dotenv
 COMPOSE_PROFILES=nginx,postgresql
