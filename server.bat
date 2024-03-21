@@ -14,8 +14,8 @@ if "%1" == "start" (
     docker compose up -d
 ) else if %1 == rebuild (
     docker compose down
-    docker compose build --no-cache
-    docker compose up -d --force-recreate
+    docker compose build --no-cache --pull %*
+    docker compose up -d
 ) else if %1 == cli (
     docker exec -it Core bash -c "sudo -u devuser /bin/bash"
 ) else (

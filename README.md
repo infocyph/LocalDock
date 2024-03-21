@@ -5,7 +5,7 @@ can be enabled based on Environment file (.env)!
 
 >1. This is for local development only!
 >2. Don't state both apache & nginx in COMPOSE_PROFILES.
->3. Domain(s) should exist in the hosts file.
+>3. Domain(s) should be available in the hosts file `<your_ip>    <your_domain>`.
 
 ## The directory structure
 
@@ -22,6 +22,7 @@ Now lets look into the localhost structure for where your configuration files sh
 
 ```
 | localhost
+       |- bin
        |- docker
              |- sites
                   |- apache
@@ -36,8 +37,9 @@ Now lets look into the localhost structure for where your configuration files sh
        |- server
        |- server.bat
 ```
+- The `bin` directory holds executable files
 - The `data` directory holds the data of images for persistence
-- The `logs` directory holds the system logs for each of the images
+- The `logs` directory holds the system logs of images
 - The `ssl` directory is where you should put your ssl certificates for your sites
 - The `conf/php` directory holds the php related configuration files
 - The `sites/apache` directory for the apache site configuration/.conf files (example available in directory)
@@ -147,18 +149,18 @@ In addition to the above, you can define the following environment variables as 
 
 - `TZ` Timezone _(default: Asia/Dhaka)_
 
-### nginx/apache
+#### nginx/apache
 - `HTTP_PORT` http port _(default: 80)_
 - `HTTPS_PORT` https port _(default: 443)_
 
-### php
+#### php
 - `PHP_VERSION` PHP version _(default: 8.3)_
 - `UID` The uid of system user _(default: 1000)_
 - `PHP_EXTENSIONS` List of php extensions in csv format
 - `LINUX_PACKAGES` List of linux packages in csv format
 - `NODE_VERSION` If node.js is required, specify version
 
-### mariadb/mysql
+#### mariadb/mysql
 - `MYSQL_IMAGE` What you wanna use? `mariadb` or `mysql` _(default: mariadb)_
 - `MYSQL_VERSION` The version for `mariadb` or `mysql` _(default: latest)_
 - `MYSQL_PORT` DB port _(default: 3306)_
@@ -167,44 +169,43 @@ In addition to the above, you can define the following environment variables as 
 - `MYSQL_PASSWORD` DB password _(default: 12345)_
 - `MYSQL_DATABASE` DB name _(default: localdb)_
 
-### mariadb/mysql client (PHPMyAdmin)
+#### mariadb/mysql client (PHPMyAdmin)
 - `MYADMIN_PORT` The client access port _(default: 3300)_
 
-### postgres
+#### postgres
 - `POSTGRESQL_VERSION` The version for `PostgreSQL` _(default: latest)_
 - `POSTGRESQL_PORT` DB port _(default: 5432)_
 - `POSTGRES_USER` DB user _(default: postgres)_
 - `POSTGRES_PASSWORD` DB password _(default: postgres)_
 - `POSTGRES_DATABASE` DB name _(default: postgres)_
 
-###  postgres client (PgAdmin 4)
+####  postgres client (PgAdmin 4)
 - `PGADMIN_PORT` The client access port _(default: 5400)_
 
-### mongodb
+#### mongodb
 - `MONGODB_VERSION` The version for `MongoDB` _(default: latest)_
 - `MONGODB_PORT` DB port _(default: 27017)_
 - `MONGODB_ROOT_USERNAME` username _(default: root)_
 - `MONGODB_ROOT_PASSWORD` password _(default: 12345)_
 
-### mongodb client (Mongo Express)
+#### mongodb client (Mongo Express)
 - `ME_VERSION` App version _(default: latest)_
 - `ME_BA_USERNAME` Basic Auth User _(default: root)_
 - `ME_BA_PASSWORD` Basic Auth Password _(default: 12345)_
 
-### elasticsearch
+#### elasticsearch
 - `ELASTICSEARCH_VERSION` ElasticSearch version _(default:8.12.2)_
 - `ELASTICSEARCH_PORT` ES port _(default: 9200)_
 
-### elasticsearch client (Kibana)
+#### elasticsearch client (Kibana)
 - `KIBANA_PORT` The client access port _(default: 5601)_
 
-### redis
+#### redis
 - `REDIS_VERSION` Redis version _(default: latest)_
 - `REDIS_PORT` Redis port _(default: 6379)_
 
-### redis client (Redis Insight)
+#### redis client (Redis Insight)
 - `RI_PORT` The client access port _(default: 5540)_
 
 ## ToDo
 - Tunnel support
-- More other images
