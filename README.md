@@ -1,7 +1,7 @@
 # localhost
 
 This project provides easy to use docker based development environment for your projects. All the modules are selective &
-can be enabled based on Environment file (.env)!
+can be enabled based on Environment file (.env)! Supports multiple domains.
 
 >1. This is for local development only!
 >2. Don't state both apache & nginx in COMPOSE_PROFILES.
@@ -128,7 +128,7 @@ PHP_EXTENSIONS=bcmath,zip,gd
 
 ### 5. Linux packages
 To install additional linux packages we used the environment variable `LINUX_PACKAGES`. 
-These extensions are additional not related to your php extensions as those will be auto installed by `PHP_EXTENSIONS`.
+These extensions are additional & not related to your php extensions (as those will be auto installed by `PHP_EXTENSIONS`).
 Supports CSV formatted values.
 
 ```dotenv

@@ -233,7 +233,7 @@ services:
       - "${KIBANA_PORT:-5601}:5601"
     environment:
       - TZ=${TZ:-Asia/Dhaka}
-      - ELASTICSEARCH_HOSTS='["http://elasticsearch:${ELASTICSEARCH_PORT:-9200}"]'
+      - ELASTICSEARCH_HOSTS='["http://elasticsearch-server:${ELASTICSEARCH_PORT:-9200}"]'
     depends_on:
       - elasticsearch-server
     networks:
