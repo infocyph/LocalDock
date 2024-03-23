@@ -48,7 +48,7 @@ Now lets look into the localhost structure for where your configuration files sh
 ## Run the server, the easiest way
 - Simply, create `.env` file, place your settings.
 - Create site configuration file in `localhost/docker/sites/(nginx or apache)`. Example configuration available in those directory as well.
-- Don't forget to add in host file entry for your domain(s)
+- Don't forget to add host file entry for your domain(s) in your local machine.
 - Run `server start` or `./server start` (on linux you must run `chmod +x server` first)
 - Your site(s) will be available in your desired domain(s)
 
@@ -59,6 +59,7 @@ _Note: on linux you must run `chmod +x server` first_
 - To stop the server, simply run `server stop` or `./server stop`
 - To restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
 - To rebuild the server, simply run `server rebuild <continer_name>` or `./server rebuild <continer_name>`
+- Launch Docker CLI GUI using `server lzd` or `./server lzd`
 - Run any php file directly using PHP container, simply run `server php path/to/file.php` or `./server php path/to/file.php`
 - In-fact you can run any command inside Core container using `server <command>` or `./server <command>` (except the above-mentioned ones)
 
@@ -77,6 +78,11 @@ _** If you have any other docker container running with the same name as of this
 - `pg_dump`
 - `pg_restore`
 - `redis-cli`
+- `lzd` # Docker CLI GUI
+- `vcs` # Git version control, actually an alias to git command
+- `cert` # Generate ssl certificates, in case you don't have it
+    - Certificate(s) will be generated directly inside the `docker/ssl` directory
+    - usage: `cert site1.internal site2.com *.site3.com .....`
 
 In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
 
@@ -208,4 +214,5 @@ In addition to the above, you can define the following environment variables as 
 - `RI_PORT` The client access port _(default: 5540)_
 
 ## ToDo
+- Supportive tools
 - Tunnel support

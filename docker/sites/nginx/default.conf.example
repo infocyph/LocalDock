@@ -1,4 +1,4 @@
-# Example 1: host (site1.local)
+## Example 1: host (site1.local)
 server {
     listen 80;
 
@@ -26,7 +26,7 @@ server {
     }
 }
 
-# Example2: default fallback host
+## Example2: default fallback host
 server {
     listen 80;
 
@@ -52,7 +52,7 @@ server {
     }
 }
 
-# Example 3: a complete example for http
+## Example 3: a complete example for http
 
 # User account under which Nginx runs
 user www-data;
@@ -113,7 +113,7 @@ http {
     }
 }
 
-# Example 4: a complete example for https
+## Example 4: a complete example for https
 # User account under which Nginx runs
 user www-data;
 

@@ -272,6 +272,21 @@ services:
     networks:
       - abmmhasan-net
 
+  server-tools:
+    container_name: SERVER_TOOLS
+    build:
+      context: docker/conf/server
+      args:
+        UID: ${UID:-1000}
+    restart: always
+    environment:
+      - TZ=${TZ:-Asia/Dhaka}
+    volumes:
+      - ./docker/ssl:/etc/ssl/custom
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - abmmhasan-net
+
 networks:
   abmmhasan-net:
     name: abmmhasan-net

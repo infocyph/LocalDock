@@ -1,4 +1,4 @@
-# http host example
+## http host example (http)
 <VirtualHost *:80>
 
     # Site Identity
@@ -23,7 +23,7 @@
 
 </VirtualHost>
 
-# http to https redirect example (all host)
+## http to https redirect example (all host)
 <VirtualHost *:80>
 
   # Server Alias (optional, list all domain variations if needed)
@@ -36,7 +36,7 @@
 
 </VirtualHost>
 
-# https host example
+## https host example (https)
 <VirtualHost *:443>
 
     # Site Identity
