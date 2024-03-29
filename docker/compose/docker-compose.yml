@@ -1,4 +1,9 @@
 version: '3.9'
+name: cruise
+networks:
+  cruise-net:
+    name: cruise network
+    driver: bridge
 
 services:
   web:
@@ -15,20 +20,18 @@ services:
     volumes:
       - ./../application:/app
       - ./docker/logs/nginx:/var/log/nginx
-      - ./docker/sites/nginx:/etc/nginx/conf.d
-      - ./docker/ssl:/etc/ssl/certs:rw
-      - ./docker/ssl:/etc/ssl/private:rw
+      - ./configuration/nginx:/etc/nginx/conf.d
+      - ./configuration/ssl:/etc/ssl/certs:rw
+      - ./configuration/ssl:/etc/ssl/private:rw
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    links:
-      - php
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   php:
     container_name: Core
     build:
-      context: docker/sites
+      context: docker/conf/docker-files
       dockerfile: nginx.Dockerfile
       args:
         PHP_VERSION: ${PHP_VERSION:-8.3}
@@ -36,6 +39,7 @@ services:
         PHP_EXTENSIONS: ${PHP_EXTENSIONS:-}
         LINUX_PACKAGES: ${LINUX_PACKAGES:-}
         NODE_VERSION: ${NODE_VERSION:-}
+        WORKING_DIR: ${WORKING_DIR}
     profiles:
       - nginx
     restart: always
@@ -48,22 +52,24 @@ services:
       - ./docker/conf/php/php.ini:/usr/local/etc/php/conf.d/99-overrides.ini
       - ./docker/conf/php/www.conf:/usr/local/etc/php-fpm.d/www.conf:rw
       - ./docker/conf/php/openssl.cnf:/etc/ssl/openssl.cnf:rw
+      - ./configuration/ssh:/home/devuser/.ssh
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   app:
     container_name: Core
     build:
-      context: docker/sites
+      context: docker/conf/docker-files
       dockerfile: apache.Dockerfile
       args:
-        PHP_VERSION: ${PHP_VERSION:-8.2}
+        PHP_VERSION: ${PHP_VERSION:-8.3}
         UID: ${UID:-1000}
         PHP_EXTENSIONS: ${PHP_EXTENSIONS:-}
         LINUX_PACKAGES: ${LINUX_PACKAGES:-}
         NODE_VERSION: ${NODE_VERSION:-}
+        WORKING_DIR: ${WORKING_DIR}
     profiles:
       - apache
     restart: always
@@ -78,12 +84,14 @@ services:
       - ./../application:/var/www/html
       - ./docker/conf/php/php.ini:/usr/local/etc/php/conf.d/99-overrides.ini
       - ./docker/conf/php/openssl.cnf:/etc/ssl/openssl.cnf
-      - ./docker/ssl:/etc/apache2/ssl:rw
+      - ./configuration/ssl:/etc/apache2/ssl:rw
       - ./docker/logs/apache:/var/log/apache2
+      - ./configuration/ssh:/home/devuser/.ssh
+      - ./configuration/apache:/etc/apache2/sites-available
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   mysql-server:
     container_name: MYSQL
@@ -104,7 +112,7 @@ services:
       - ./docker/data/mysql:/var/lib/mysql
       - ./docker/logs/mysql:/var/log/mysql
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   mysql-client:
     container_name: MY_ADMIN
@@ -129,7 +137,7 @@ services:
     depends_on:
       - mysql-server
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   postgres-server:
     container_name: POSTGRESQL
@@ -147,7 +155,7 @@ services:
     volumes:
       - ./docker/data/postgresql:/var/lib/postgresql/data
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   postgres-client:
     container_name: PG_ADMIN
@@ -166,7 +174,7 @@ services:
     depends_on:
       - postgres-server
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   mongo-server:
     container_name: MONGODB
@@ -184,7 +192,7 @@ services:
       options:
         max-size: 1g
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   mongo-client:
     container_name: MONGO_ADMIN
@@ -204,7 +212,7 @@ services:
     depends_on:
       - mongo-server
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   elasticsearch-server:
     container_name: ELASTICSEARCH
@@ -221,7 +229,7 @@ services:
     volumes:
       - ./docker/data/elasticsearch:/usr/share/elasticsearch/data
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   elasticsearch-client:
     container_name: KIBANA
@@ -237,7 +245,7 @@ services:
     depends_on:
       - elasticsearch-server
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   redis-server:
     container_name: REDIS
@@ -253,7 +261,7 @@ services:
       - TZ=${TZ:-Asia/Dhaka}
       - REDIS_ARGS = "--save 10 1 --appendonly yes"
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   redis-client:
     container_name: REDIS_INSIGHT
@@ -270,24 +278,24 @@ services:
     depends_on:
       - redis-server
     networks:
-      - abmmhasan-net
+      - cruise-net
 
   server-tools:
     container_name: SERVER_TOOLS
     build:
-      context: docker/conf/server
+      context: docker/conf/docker-files
+      dockerfile: tools.Dockerfile
       args:
         UID: ${UID:-1000}
+    profiles:
+      - tools
     restart: always
     environment:
       - TZ=${TZ:-Asia/Dhaka}
     volumes:
-      - ./docker/ssl:/etc/ssl/custom
+      - ./configuration/ssl:/etc/ssl/custom
+      - ./configuration/ssh:/home/devuser/.ssh
+      - ./../application:/app
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - abmmhasan-net
-
-networks:
-  abmmhasan-net:
-    name: abmmhasan-net
-    driver: bridge
+      - cruise-net

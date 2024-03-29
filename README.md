@@ -23,68 +23,38 @@ Now lets look into the localhost structure for where your configuration files sh
 ```
 | localhost
        |- bin
-       |- docker
-             |- sites
-                  |- apache
-                  |- nginx
-             |- conf
-                  |- php
-             |- ssl
-             |- data
-             |- logs
+       |- configuration # this is where you should put your configuration files
+             |- apache # your apache Site configuration files (example available in directory)
+             |- nginx # your nginx Site configuration files (example available in directory)
+             |- php # your php configuration file (php.ini)
+             |- ssh # your ssh keys (needed specifically for git ssh authentication)
+             |- ssl # your ssl certificates
+       |- docker # this directory should stay untouched
+             |- compose # docker compose file(s)
+             |- conf # docker configuration files
+             |- data # docker data files for persistence
+             |- logs # container logs
        |- .env
-       |- docker-compose.yml
-       |- server
-       |- server.bat
+       |- cruise
+       |- cruise.bat
 ```
-- The `bin` directory holds executable files
-- The `data` directory holds the data of images for persistence
-- The `logs` directory holds the system logs of images
-- The `ssl` directory is where you should put your ssl certificates for your sites
-- The `conf/php` directory holds the php related configuration files
-- The `sites/apache` directory for the apache site configuration/.conf files (example available in directory)
-- The `sites/nginx` directory for the nginx site configuration/.conf files (example available in directory)
 
 ## Run the server, the easiest way
 - Simply, create `.env` file, place your settings.
-- Create site configuration file in `localhost/docker/sites/(nginx or apache)`. Example configuration available in those directory as well.
+- Create site configuration file in `localhost/configuration/(nginx or apache)`. Example configuration available in those directories.
 - Don't forget to add host file entry for your domain(s) in your local machine.
-- Run `server start` or `./server start` (on linux you must run `chmod +x server` first)
+- Run `cruise start` or `./cruise start` (on linux you must run `chmod +x cruise` first)
 - Your site(s) will be available in your desired domain(s)
 
 ## Usage
-_Note: on linux you must run `chmod +x server` first_
-- `./server start/relaod` or `server start/reload` to start the server or reload with updated Environment variables
-- If you want to enter in PHP container shell, simply run `server cli` or `./server cli`
-- To stop the server, simply run `server stop` or `./server stop`
-- To restart/reboot the server, simply run `server restart/reboot` or `./server restart/reboot`
-- To rebuild the server, simply run `server rebuild <continer_name>` or `./server rebuild <continer_name>`
-- Launch Docker CLI GUI using `server lzd` or `./server lzd`
-- Run any php file directly using PHP container, simply run `server php path/to/file.php` or `./server php path/to/file.php`
-- In-fact you can run any command inside Core container using `server <command>` or `./server <command>` (except the above-mentioned ones)
-
-## CLI Utility
-You can add the `localhost/bin` directory, to your PATH environment variable for global usage of several commands.
-
-_** If you have any other docker container running with the same name as of this docker container names, it will end up in conflict!_
-
-**Available commands:**
-- `php`
-- `mysql`
-- `mysqldump`
-- `mariadb`
-- `mariadb-dump`
-- `psql`
-- `pg_dump`
-- `pg_restore`
-- `redis-cli`
-- `lzd` # Docker CLI GUI
-- `vcs` # Git version control, actually an alias to git command
-- `cert` # Generate ssl certificates, in case you don't have it
-    - Certificate(s) will be generated directly inside the `docker/ssl` directory
-    - usage: `cert site1.internal site2.com *.site3.com .....`
-
-In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
+_Note: on linux you must run `chmod +x cruise` first_
+- `./cruise start/relaod` or `cruise start/reload` to start the server or reload with updated Environment variables
+- If you want to enter in PHP container shell, simply run `cruise core` or `./cruise core`
+- To stop the server, simply run `cruise stop` or `./cruise stop`
+- To restart/reboot the server, simply run `cruise restart/reboot` or `./cruise restart/reboot`
+- To rebuild the server, simply run `cruise rebuild <continer_name>` or `./cruise rebuild <continer_name>`
+- Launch Docker CLI GUI using `cruise lzd` or `./cruise lzd`
+- You can run any docker compose command using `cruise <command>` or `./cruise <command>` (except the above-mentioned ones)
 
 ## Modules & Other main settings
 
@@ -110,6 +80,7 @@ in CSV format (i.e. nginx,mysql). Here are the list of modules you can state her
 - `mongodb` loads mongodb & mongo express
 - `elasticsearch` loads elasticsearch & kibana
 - `redis` loads redis & redis insight
+- `tools` loads server tools (check below for more info)
 
 _Note: don't include both `nginx` & `apache`_
 
@@ -213,6 +184,52 @@ In addition to the above, you can define the following environment variables as 
 #### redis client (Redis Insight)
 - `RI_PORT` The client access port _(default: 5540)_
 
+## CLI Utilities
+You can add the `localhost/bin` directory, to your PATH environment variable for global usage of several commands. These
+will be available depending on what you enable in `COMPOSE_PROFILES`.
+
+_** If you have any other docker container running with the same name as of this docker container names, it will end up in conflict!_
+
+**Available commands:**
+- `php`
+- `mysql`
+- `mysqldump`
+- `mariadb`
+- `mariadb-dump`
+- `psql`
+- `pg_dump`
+- `pg_restore`
+- `redis-cli`
+- `lzd` # Docker CLI GUI
+- `cert` # Generate ssl certificates, in case you don't have it
+  - Certificate(s) will be generated directly inside the `docker/ssl` directory
+  - usage: `cert site1.internal site2.com *.site3.com .....`
+
+In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
+
+## Server Tools
+Well, you can use these tools to help you out. We have created a list of them below. These tools can help you do several things.
+This container mounts your application directory as `/app` inside the container. So you can use these tools on all your projects.
+
+**Usable outside docker container:**
+- `lzd` # Docker CLI GUI
+- `cert` # Generate ssl certificates, in case you don't have it
+  - Certificate(s) will be generated directly inside the `configuration/ssl` directory
+  - usage: `cert site1.internal site2.com *.site3.com .....`
+
+**Usable inside docker container:**
+- `git` (if you need to incorporate ssh keys with git, use the `configuration/ssh` directory)
+- `curl`
+- `wget`
+- net-tools (available commands:  `arp`, `hostname`, `ifconfig`, `netstat`,... etc.)
+- `git fame` # Git contributor stats
+  - `git fame -e --enum` # Get Normal Counter on Surviving code (low accuracy)
+  - `git fame -ewMC --enum` # Deep Counter on Surviving code (intra-file & inter-file modifier detector, file system independent) more calculation time
+  - Check `git fame -h` command for command details
+- `owners` # generate owners list (i.e for Github: `owners | tee .github/CODEOWNERS`)
+- `git-story` # Animated Git story generator (check `git-story -h` for command details)
+
 ## ToDo
 - Supportive tools
 - Tunnel support
+- SupervisorD
