@@ -202,7 +202,7 @@ _** If you have any other docker container running with the same name as of this
 - `redis-cli`
 - `lzd` # Docker CLI GUI
 - `cert` # Generate ssl certificates, in case you don't have it
-  - Certificate(s) will be generated directly inside the `docker/ssl` directory
+  - Certificate(s) will be generated directly inside the `configuration/ssl` directory
   - usage: `cert site1.internal site2.com *.site3.com .....`
 
 In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
