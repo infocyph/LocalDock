@@ -9,7 +9,7 @@ can be enabled based on Environment file (.env)! Supports multiple domains.
 
 ## The directory structure
 
-For using your projects with this, you should arrange your projects structure as follows,
+For using your projects with this, by default you should arrange your projects structure as follows,
 ```
 | application
        |- site1
@@ -18,6 +18,13 @@ For using your projects with this, you should arrange your projects structure as
        |- .....
 | localhost (this repository)
 ```
+But the project structure is flexible. If wanna change the directory of your projects (set other custom path instead of 
+same level application directory), just change/add the `PROJECT_DIR` in `.env` file, which should point to your project directory.
+
+```dotenv
+PROJECT_DIR=../path/to/your/projects/directory # supports relative/absolute path
+```
+
 Now lets look into the localhost structure for where your configuration files should be.
 
 ```
@@ -64,7 +71,7 @@ Checkout the .env.example file for example. To further understand these keep rea
 ### 1. Sync the system user
 Sync the internal docker user with the system user using the environment variable `UID`. In case of linux you can get this
 using `id -u` command which is the UID of current user. In case of windows, you can get with same command if you use [cmder
-terminal](https://github.com/cmderdev/cmder).
+terminal](https://github.com/cmderdev/cmder) or git-bash.
 
 ```dotenv
 UID=1000
@@ -91,7 +98,7 @@ COMPOSE_PROFILES=nginx,postgresql
 Select the PHP version using the environment variable `PHP_VERSION`. Supports single PHP version.
 
 ```dotenv
-PHP_VERSION=8.2
+PHP_VERSION=8.3
 ```
 
 ### 4. PHP extensions
@@ -205,7 +212,7 @@ _** If you have any other docker container running with the same name as of this
   - Certificate(s) will be generated directly inside the `configuration/ssl` directory
   - usage: `cert site1.internal site2.com *.site3.com .....`
 
-In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) for better experience.
+In windows, it is recommended to use [cmder terminal](https://github.com/cmderdev/cmder) or git-bash for better experience.
 
 ## Server Tools
 Well, you can use these tools to help you out. We have created a list of them below. These tools can help you do several things.
@@ -230,6 +237,5 @@ This container mounts your application directory as `/app` inside the container.
 - `git-story` # Animated Git story generator (check `git-story -h` for command details)
 
 ## ToDo
-- Supportive tools
 - Tunnel support
-- SupervisorD
+- SupervisorD with PHP
