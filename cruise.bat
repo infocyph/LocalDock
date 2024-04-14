@@ -31,6 +31,10 @@ for /r "%directory%\configuration\apache\" %%f in (*.conf) do (
     )
 )
 
+if not exist "%directory%\configuration\php\php.ini" (
+    type nul > "%directory%\configuration\php\php.ini"
+)
+
 if "%1" == "start" (
     docker compose --project-directory "%directory%" -f docker/compose/docker-compose.yml up -d
 ) else if %1 == reload (
@@ -49,7 +53,7 @@ if "%1" == "start" (
     docker compose --project-directory "%directory%" -f docker/compose/docker-compose.yml up -d
 ) else if %1 == rebuild (
     docker compose --project-directory "%directory%" -f docker/compose/docker-compose.yml down
-    docker compose --project-directory "%directory%" -f docker/compose/docker-compose.yml build --no-cache --pull $@
+    docker compose --project-directory "%directory%" -f docker/compose/docker-compose.yml build --no-cache --pull %2 %3 %4 %5 %6 %7 %8 %9
 ) else if %1 == core (
     docker exec -it Core bash -c "sudo -u devuser /bin/bash"
 ) else if %1 == lzd (
