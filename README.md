@@ -7,6 +7,11 @@ can be enabled based on Environment file (.env)! Supports multiple domains.
 >2. Don't state both apache & nginx in COMPOSE_PROFILES.
 >3. Domain(s) should be available in the hosts file `<your_ip>    <your_domain>`.
 
+## Prerequisites (Docker)
+Install docker on your system first. If you already have docker installed, you can skip this step. 
+- To install on Linux, it is recommended to use [Docker Engine](https://docs.docker.com/engine/install/).
+- To install on other OS, use [Docker Desktop](https://docs.docker.com/desktop/) (although you can also install this on linux as well).
+
 ## The directory structure
 
 For using your projects with this, by default you should arrange your projects structure as follows,
@@ -59,7 +64,7 @@ _Note: on linux you must run `chmod +x cruise` first_
 - If you want to enter in PHP container shell, simply run `cruise core` or `./cruise core`
 - To stop the server, simply run `cruise stop` or `./cruise stop`
 - To restart/reboot the server, simply run `cruise restart/reboot` or `./cruise restart/reboot`
-- To rebuild the server, simply run `cruise rebuild <continer_name>` or `./cruise rebuild <continer_name>`
+- To rebuild the server, simply run `cruise rebuild <service_name>` or `./cruise rebuild <service_name>`
 - Launch Docker CLI GUI using `cruise lzd` or `./cruise lzd`
 - You can run any docker compose command using `cruise <command>` or `./cruise <command>` (except the above-mentioned ones)
 
@@ -80,14 +85,14 @@ UID=1000
 ### 2. Selecting the docker image
 To select the docker image, we used the environment variable `COMPOSE_PROFILES`. You will include your required modules
 in CSV format (i.e. nginx,mysql). Here are the list of modules you can state here,
-- `nginx` loads nginx image with php
-- `apache` loads apache with php
-- `mysql` or `mariadb` loads mysql/mariadb (depending on env variable; default is mariadb) with phpmyadmin
-- `postgresql` loads postgresql & pgadmin
-- `mongodb` loads mongodb & mongo express
-- `elasticsearch` loads elasticsearch & kibana
-- `redis` loads redis & redis insight
-- `tools` loads server tools (check below for more info)
+- `nginx` loads nginx image with php (service: web, php)
+- `apache` loads apache with php (service: app)
+- `mysql` or `mariadb` loads mysql/mariadb with phpmyadmin (service: mysql-server, mysql-client)
+- `postgresql` loads postgresql & pgadmin (service: postgres-server, postgres-client)
+- `mongodb` loads mongodb & mongo express (service: mongo-server, mongo-client)
+- `elasticsearch` loads elasticsearch & kibana (service: elasticsearch-server, elasticsearch-client)
+- `redis` loads redis & redis insight (service: redis-server, redis-client)
+- `tools` loads server tools (check below for more info) (service: server-tools)
 
 _Note: don't include both `nginx` & `apache`_
 
