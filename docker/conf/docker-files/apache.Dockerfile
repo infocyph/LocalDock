@@ -18,6 +18,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
 RUN a2enmod rewrite ssl socache_shmcb headers && a2ensite *
 
 # Install PHP extensions
+ARG PHP_EXTENSIONS
 RUN ["/bin/bash", "-c", "install-php-extensions @composer ${PHP_EXTENSIONS//,/ }"]
 
 # Install Node
